@@ -7,11 +7,11 @@ Priverse NFT Marketplace
  - Apache Web Server 2.4.41 or newer
 
 # Installation Steps
-1. Upload source files in /var/www/html/<your_folder_name>
-2. Import the "database.sql" file located in '/import' folder with the following console command.
+1. Upload source files in `/var/www/html/<your_folder_name>`
+2. Import the `database.sql` file located in `import` folder with the following console command.
 
 ```mysql -u<username> -p<password> <databasename> < database.sql to mysql server.```
 
-3. Update MySQL connection variables in '**db.php**' file located in root folder.
+3. Update MySQL connection variables in `db.php` file located in root folder.
 
 You are done!
