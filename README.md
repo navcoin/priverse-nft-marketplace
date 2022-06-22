@@ -12,6 +12,6 @@ Priverse NFT Marketplace
 
 ```mysql -u<username> -p<password> <databasename> < database.sql to mysql server.```
 
-3. Update MySQL connection variables in `db.php` file located in root folder.
+3. Update MySQL server connection variables in `db.php` file located in root folder.
 
 You are done!
