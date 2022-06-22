@@ -1,5 +1,4 @@
-# priverse-nft-marketplace
- Priverse NFT Marketplace
+Priverse NFT Marketplace
  
 # Requirements
  - Ubuntu 20.04 or newer 
