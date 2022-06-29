@@ -254,7 +254,7 @@
 										Web3.CreateNftSellOrder({
 												return_order:false,
 												submit_order:true,
-												api_url:"https://api.nextwallet.org/",
+												api_url:"https://api.nextwallet.org/<?=$GLOBALS['network']?>/",
 												token_id:this.token_id,
 												nft_id:this.nft_id,
 												price:this.price
@@ -268,7 +268,7 @@
 								console.log(collections);
 								app.collections=collections;
 							}
-							function accept_create_nft_sell_order(address)
+							function accept_create_nft_sell_order(result)
 							{
 								console.log("create nft sell order -> " + result);
 								Swal.fire({
@@ -322,7 +322,7 @@
 											</div>
 											<?
 											$orders=array();
-											$sql="SELECT * FROM `orders` WHERE is_valid=1";
+											$sql="SELECT * FROM `orders` WHERE is_valid=1 AND network_id=".$GLOBALS['network_id'];
 											$q=$GLOBALS['dbh']->prepare($sql);
 											$q->execute();
 											if ($q->rowCount()>0)

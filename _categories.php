@@ -25,9 +25,10 @@ try
 					<?
 					while ($row=$q->fetch(PDO::FETCH_ASSOC))
 					{
-						$sqlx="SELECT * FROM `collections` WHERE JSON_EXTRACT(metadata, '$.category')=:category";
+						$sqlx="SELECT * FROM `collections` WHERE JSON_EXTRACT(metadata, '$.category')=:category AND network_id=:network_id";
 						$qx=$GLOBALS['dbh']->prepare($sqlx);
 						$qx->bindParam(':category',$row["tag"], PDO::PARAM_STR);
+						$qx->bindParam(':network_id',$GLOBALS['network_id'], PDO::PARAM_STR);
 						$qx->execute();
 						?>
 						<div class="col-md-4">

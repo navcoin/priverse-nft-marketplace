@@ -1,9 +1,10 @@
 <?
-$sql="SELECT name,metadata FROM collections WHERE token_id=:token_id LIMIT 1";
+$sql="SELECT name,metadata FROM collections WHERE token_id=:token_id AND network_id=:network_id LIMIT 1";
 try
 {
 	$q=$GLOBALS['dbh']->prepare($sql);
 	$q->bindParam(':token_id',$_GET["token_id"], PDO::PARAM_STR);
+	$q->bindParam(':network_id',$GLOBALS['network_id'], PDO::PARAM_STR);
 	$q->execute();
 	if ($q->rowCount()>0)
 	{
@@ -52,7 +53,7 @@ try
 								$name=$row["name"];
 								?>
 								<div class="col-md-3 m-3">
-									<div class="card" style="max-width: 18rem;">
+									<div class="card bg-black text-secondary" style="max-width: 18rem;">
 									<?
 										$media_type=explode("/",$metadata->attributes->content_type)[0];
 										if ($media_type=="image")
@@ -85,8 +86,8 @@ try
 										<div class="card-body">
 											<h5 class="card-title"><?=$metadata->name?><span class="float-end">#<?=$row["nft_id"]?></span></h5>
 											<p><?=$name?></p>
-											<p class="card-text"><?=$metadata->description?><span class="float-end"><img style="width:32px;height:32px;"  src="images/xnav-logo-no-border.svg"/><?=navoshi_to_nav($nft_order->pay[0]->amount)?></span></p>
-											<a href="assets/<?=$row["token_id"]?>/<?=$row["nft_id"]?>" class="btn btn-dark">BUY</a>
+											<p class="card-text"><?=$metadata->description?><span class="float-end"><img style="width:12px;height:12px;" src="images/xnav-logo-white-no-border.png"/>&nbsp;<?=navoshi_to_nav($nft_order->pay[0]->amount)?></span></p>
+											<a href="assets/<?=$row["token_id"]?>/<?=$row["nft_id"]?>" class="btn btn-outline-secondary stretched-link">BUY</a>
 										</div>
 									</div>
 								</div>

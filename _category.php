@@ -9,9 +9,10 @@ try
 	{
 		$row=$q->fetch(PDO::FETCH_ASSOC);
 		title($row["name"]);
-		$sql="SELECT * FROM `collections` WHERE JSON_EXTRACT(metadata, '$.category')=:category";
+		$sql="SELECT * FROM `collections` WHERE JSON_EXTRACT(metadata, '$.category')=:category AND network_id=:network_id";
 		$q=$GLOBALS['dbh']->prepare($sql);
 		$q->bindParam(':category',$_GET["tag"], PDO::PARAM_STR);
+		$q->bindParam(':network_id',$GLOBALS['network_id'], PDO::PARAM_STR);
 		$q->execute();
 		?>
 		<div class="bg-dark text-white">

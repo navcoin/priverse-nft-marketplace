@@ -7,6 +7,8 @@ error_reporting(0);
 date_default_timezone_set('Europe/Istanbul');
 $wallet_create_account=false;
 $is_account_enabled=false;
+$GLOBALS['network']="testnet";
+$GLOBALS['network_id']=2;
 include "db.php";
 try
 {

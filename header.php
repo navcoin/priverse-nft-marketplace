@@ -116,7 +116,7 @@
 						</span>
 					</span>
 					<span v-else>
-						<a href="download-wallet" class="btn btn-info"><i class="fa-solid fa-puzzle-piece"></i>&nbsp;Install Extension</a>
+						<a target="_blank" href="https://chrome.google.com/webstore/detail/navcoin-wallet/mehadhhadnkkdajgmdoebkgfldobcded" class="btn btn-info"><i class="fa-solid fa-puzzle-piece"></i>&nbsp;Install Extension</a>
 					</span>
 				</div>
 			</div>

@@ -116,7 +116,11 @@
 			orders.token_id,
 			orders.nft_id,
 			collections.name
-			FROM orders LEFT JOIN collections ON orders.token_id=collections.token_id WHERE is_valid=1 LIMIT 4";
+			FROM orders 
+			LEFT JOIN collections 
+			ON orders.token_id=collections.token_id 
+			WHERE orders.is_valid=1 
+			AND collections.network_id=".$GLOBALS['network_id']." LIMIT 4";
 			$q=$GLOBALS['dbh']->prepare($sql);
 			$q->execute();
 			if ($q->rowCount()>0)

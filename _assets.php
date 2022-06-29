@@ -1,10 +1,11 @@
 <?=title("Asset Details")?>
 <?
-$sql="SELECT name,metadata FROM collections WHERE token_id=:token_id LIMIT 1";
 try
 {
+	$sql="SELECT name,metadata FROM collections WHERE token_id=:token_id AND network_id=:network_id LIMIT 1";
 	$q=$GLOBALS['dbh']->prepare($sql);
 	$q->bindParam(':token_id',$_GET["token_id"], PDO::PARAM_STR);
+	$q->bindParam(':network_id',$GLOBALS['network_id'], PDO::PARAM_STR);
 	$q->execute();
 	if ($q->rowCount()>0)
 	{
