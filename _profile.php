@@ -63,15 +63,16 @@
 										<div class="row">
 											<div class="col-md-6">
 												<div v-if="nft.attributes">
-													<img v-if="nft.attributes.content_type.split('/')[0]=='image'" class="img-thumbnail" :src="ipfs_to_url(nft.image)">
-													<div style="margin-top:5px;" v-if="nft.attributes.content_type.split('/')[0]=='audio'">
+													<img v-if="nft.attributes.content_type&&nft.attributes.content_type.split('/')[0]=='image'" class="img-thumbnail" :src="ipfs_to_url(nft.image)"/>
+													<img v-else/>
+													<div style="margin-top:5px;" v-if="nft.attributes.content_type&&nft.attributes.content_type.split('/')[0]=='audio'">
 														<audio controls style="width:100%">
 															<source :src="ipfs_to_url(nft.image)" type="audio/ogg">
 															<source :src="ipfs_to_url(nft.image)" type="audio/mpeg">
 															Your browser does not support the audio element.
 														</audio>
 													</div>
-													<div style="margin-top:5px;" v-if="nft.attributes.content_type.split('/')[0]=='video'">
+													<div style="margin-top:5px;" v-if="nft.attributes.content_type&&nft.attributes.content_type.split('/')[0]=='video'">
 														<video controls playsinline style="width:100%">
 															<source :src="ipfs_to_url(nft.image)" type="video/mp4">
 															<source :src="ipfs_to_url(nft.image)" type="video/ogg">
@@ -84,9 +85,9 @@
 												<p>Collection : {{collection_name}}</p>
 												<p>NFT Name : {{nft.name}}</p>
 												<p>NFT ID : {{nft_id}}</p>
-												<p v-if="nft.attributes">Content Type : {{nft.attributes.content_type}}</p>
+												<p v-if="nft.attributes&&nft.attributes.content_type">Content Type : {{nft.attributes.content_type}}</p>
 												<p>Sale Price (xNAV) : </p>
-												<input type="number" step="0.01" class="form-control bg-dark text-white" placeholder="Price" id="price" v-model="price"/>										
+												<input type="number" step="0.01" class="form-control bg-dark text-white" placeholder="Price" id="price" v-model="price"/>
 											</div>
 										</div>
 									</div>
@@ -107,41 +108,43 @@
 												</div>
 												<div class="card-body">
 													<div class="row">
-														<div class="col-md-3">
-															<img v-if="ipfs_to_url(parseJSON(item.scheme).image)" class="img-thumbnail" :src="ipfs_to_url(parseJSON(item.scheme).image)">
-															<div>{{parseJSON(item.scheme).description}}</div>
-															<i class="fa-solid fa-arrow-up-right-from-square"></i>&nbsp;<a class="text-truncate" target="_blank" :href="parseJSON(item.scheme).external_url">{{parseJSON(item.scheme).external_url}}</a>
+														<div class="col-md-3 bg-dark" style="border-right:1px dotted #121212">
+															<img v-if="parseJSON(item.scheme).image&&ipfs_to_url(parseJSON(item.scheme).image)" class="img-fluid" :src="ipfs_to_url(parseJSON(item.scheme).image)"/>
+															<i class="fas fa-image fa-9x text-secondary" v-else></i>
+															<div class="pt-3">{{parseJSON(item.scheme).description}}</div>
+															<a class="btn btn-outline-secondary text-truncate" target="_blank" :href="parseJSON(item.scheme).external_url"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
 														</div>
-														<div class="col-md-9">
+														<div class="col-md-9 bg-dark">
 															<div class="row">
 																<div class="col-md-4 mb-5" v-for="(item2,key2,index) in item.confirmed">
-																	<img v-if="parseJSON(item2).attributes.content_type.split('/')[0]=='image'" class="card-img-top rounded" v-else onerror="this.style.display='none'" :src="ipfs_to_url(parseJSON(item2).image)">
-																<div class="mt-3">
-																	<small>
-																		<i v-if="parseJSON(item2).attributes.content_type.split('/')[0]=='audio'" class="fa-solid fa-music mr-3"></i>
-																			<i v-if="parseJSON(item2).attributes.content_type.split('/')[0]=='video'" class="fa-solid fa-circle-play mr-3"></i>
-																			{{parseJSON(item2).name}}
-																			<span class="float-end">#{{key2}}</span>
-																	</small>
-																</div>
-																<div>
+																	<div class="align-middle" style="min-height:196px;">
+																		<img v-if="parseJSON(item2).attributes.content_type&&parseJSON(item2).attributes.content_type.split('/')[0]=='image'" class="card-img-top rounded" style="max-height:196px !important;" v-else onerror="this.style.display='none'" :src="ipfs_to_url(parseJSON(item2).image)"/>
+																		<i class="fas fa-image fa-9x text-secondary" v-else></i>
+																	</div>
+																	<div>
 																		<small>
-																			{{parseJSON(item2).description}}
+																			<i v-if="parseJSON(item2).attributes.content_type&&parseJSON(item2).attributes.content_type.split('/')[0]=='audio'" class="fa-solid fa-music mr-3"></i>
+																			<i v-if="parseJSON(item2).attributes.content_type&&parseJSON(item2).attributes.content_type.split('/')[0]=='video'" class="fa-solid fa-circle-play mr-3"></i>
+																			{{parseJSON(item2).name}}
+																			<span class="float-start text-secondary">#{{key2}}&nbsp;</span>
 																		</small>
 																	</div>
 																	<div>
 																		<small>
-																			<i class="fa-solid fa-arrow-up-right-from-square"></i>&nbsp;<a class="text-truncate" target="_blank" :href="parseJSON(item2).external_url">{{parseJSON(item2).external_url}}</a>
+																			{{(parseJSON(item2).description?parseJSON(item2).description:"No description...")}}
 																		</small>
 																	</div>
-																	<div style="margin-top:5px;" v-if="parseJSON(item2).attributes.content_type.split('/')[0]=='audio'">
+																	<div class="pt-3">
+																		<a class="btn btn-outline-secondary text-truncate" target="_blank" :href="parseJSON(item2).external_url"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+																	</div>
+																	<div style="margin-top:5px;" v-if="parseJSON(item2).attributes.content_type&&parseJSON(item2).attributes.content_type.split('/')[0]=='audio'">
 																		<audio controls style="width:100%">
 																			<source :src="ipfs_to_url(parseJSON(item2).image)" type="audio/ogg">
 																			<source :src="ipfs_to_url(parseJSON(item2).image)" type="audio/mpeg">
 																			Your browser does not support the audio element.
 																		</audio>
 																	</div>
-																	<div style="margin-top:5px;" v-if="parseJSON(item2).attributes.content_type.split('/')[0]=='video'">
+																	<div style="margin-top:5px;" v-if="parseJSON(item2).attributes.content_type&&parseJSON(item2).attributes.content_type.split('/')[0]=='video'">
 																		<video onplay="this.webkitEnterFullscreen();" controls playsinline style="width:100%">
 																			<source :src="ipfs_to_url(parseJSON(item2).image)" type="video/mp4">
 																			<source :src="ipfs_to_url(parseJSON(item2).image)" type="video/ogg">
@@ -310,7 +313,7 @@
 										<div v-if="Object.keys(collections).length>0">
 											<div v-for="(token,token_id,index) in collections" v-if="parseJSON(token.scheme).version==1">
 												<div class="d-flex text-muted pt-3" v-for="(nft,nft_id,index) in token.confirmed" v-if="(orders.includes(token_id+'-'+nft_id))">
-													<img style="width:128px;height:auto;" class="img-thumbnail rounded" v-if="parseJSON(nft).attributes.content_type.split('/')[0]=='image'" v-else onerror="this.style.display='none'" :src="ipfs_to_url(parseJSON(nft).image)">
+													<img style="width:128px;height:auto;" class="img-thumbnail rounded" v-if="parseJSON(nft).attributes.content_type&&parseJSON(nft).attributes.content_type.split('/')[0]=='image'" v-else onerror="this.style.display='none'" :src="ipfs_to_url(parseJSON(nft).image)">
 													<p class="p-3 pb-3 mb-0 small lh-sm">
 														{{token_id}}
 														<br/>
@@ -439,6 +442,8 @@
 <style>
 .img-thumbnail
 {
+	min-width: 128px;
+	min-height: 128px;
 	background-color: #121212 !important;
 	border:1px solid #232323;
 }
@@ -457,5 +462,9 @@
 .modal-footer
 {
 	border-top-color: #343434;
+}
+.bg-black
+{
+	border-color:  #454545;
 }
 </style>

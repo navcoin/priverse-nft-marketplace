@@ -116,7 +116,7 @@
 						</span>
 					</span>
 					<span v-else>
-						<a target="_blank" href="https://chrome.google.com/webstore/detail/navcoin-wallet/mehadhhadnkkdajgmdoebkgfldobcded" class="btn btn-info"><i class="fa-solid fa-puzzle-piece"></i>&nbsp;Install Extension</a>
+						<a target="_blank" href="https://chrome.google.com/webstore/detail/navcoin-wallet/mehadhhadnkkdajgmdoebkgfldobcded" class="btn btn-outline-secondary"><i class="fa-solid fa-puzzle-piece"></i>&nbsp;Install Extension</a>
 					</span>
 				</div>
 			</div>
@@ -124,7 +124,7 @@
 	</header>
 	<script>
 		var Web3 = new Web3SDK({
-			"network":"testnet",
+			"network":"<?=$GLOBALS['network']?>",
 			"log":true
 		});
 		const event_on_wallet_connected = new Event('on_wallet_connected');

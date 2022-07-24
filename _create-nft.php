@@ -66,7 +66,7 @@
 									<pre class="border" v-if="scheme" v-html="JSON.stringify(JSON.parse(scheme), null, 2)"></pre>
 								</div>
 								<div class="form-group mt-3">
-									<button class="btn btn-warning" v-on:click="importNFT()" :disabled="!nft_id || !name || !scheme"><i class="fa-solid fa-wallet"></i>&nbsp;Import NFT to Wallet</button>
+									<button class="btn btn-warning" v-on:click="confirmImportNFT()" :disabled="!nft_id || !name || !scheme"><i class="fa-solid fa-wallet"></i>&nbsp;Import NFT to Wallet</button>
 								</div>
 							</div>
 						</div>
@@ -201,15 +201,41 @@ input[type="file"]
 			importNFT: function()
 			{
 				let vm=this;
-				console.log(this.name);
-				console.log(this.scheme);
-				console.log(this.nft_id);
-				console.log("Importing nft...");
+				console.log(vm.name);
+				console.log(vm.scheme);
+				console.log(vm.nft_id);
+				console.log("Importing NFT...");
 				Web3.CreateNft({
 					token_id:undefined,
-					nft_id:parseInt(this.nft_id),
-					scheme:this.scheme
+					nft_id:parseInt(vm.nft_id),
+					scheme:vm.scheme
 				});
+			},
+			confirmImportNFT: function()
+			{
+				let vm=this;
+				if (!vm.uploadSuccess)
+				{
+					Swal.fire({
+						title: 'Are you sure?',
+						text: "You did not specify a file for your NFT. Do you want to continue?",
+						icon: 'warning',
+						showCancelButton: true,
+						confirmButtonColor: '#3085d6',
+						cancelButtonColor: '#d33',
+						confirmButtonText: 'Yes!'
+					}).then((result) => 
+					{
+						if (result.isConfirmed)
+						{
+							vm.importNFT();
+						}
+					});
+				}
+				else
+				{
+					vm.importNFT();
+				}
 			},
 			addFile: function()
 			{
@@ -220,6 +246,14 @@ input[type="file"]
 				{
 					if (response.data.success)
 					{
+						Swal.fire({
+						  position: 'top-end',
+						  icon: 'success',
+						  title: 'Upload success',
+						  text: "Your file successfully uploaded",
+						  showConfirmButton: false,
+						  timer: 3000
+						});
 						console.log("Success!");
 						console.log("URL:"+response.data.url);
 						console.log("CID:"+response.data.cid);
@@ -230,6 +264,14 @@ input[type="file"]
 					}
 					else
 					{
+						Swal.fire({
+						  position: 'top-end',
+						  icon: 'error',
+						  title: 'Upload failed',
+						  text: "Reason : " + response.data.message,
+						  showConfirmButton: false,
+						  timer: 3000
+						});
 						console.log("Failed!");
 						console.log("Reason:"+response.data.message);
 					}
@@ -293,7 +335,7 @@ input[type="file"]
 			{
 				this.scheme=JSON.stringify({
 					version:this.version,
-					category:this.category.id,
+					category:(this.category&&this.category.id?this.category.id:null),
 					sub_category:(this.sub_category?this.sub_category.id:null),
 					name:this.name,
 					description:this.description,
