@@ -64,7 +64,7 @@
 											<div class="col-md-6">
 												<div v-if="nft.attributes">
 													<img v-if="nft.attributes.content_type&&nft.attributes.content_type.split('/')[0]=='image'" class="img-thumbnail" :src="ipfs_to_url(nft.image)"/>
-													<img v-else/>
+													<i class="fas fa-image fa-9x text-secondary" v-else></i>
 													<div style="margin-top:5px;" v-if="nft.attributes.content_type&&nft.attributes.content_type.split('/')[0]=='audio'">
 														<audio controls style="width:100%">
 															<source :src="ipfs_to_url(nft.image)" type="audio/ogg">
@@ -151,7 +151,7 @@
 																			Your browser does not support the audio element.
 																		</video>
 																	</div>
-																	<a class="btn btn-primary mt-3" v-on:click="createNftSellOrder(key,item2,key2,parseJSON(item.scheme).name)"><i class="fa-solid fa-store"></i>&nbsp;Sell</a>
+																	<a class="btn btn-primary mt-3" v-on:click="createNftSellOrder(key,item2,key2,item.name)"><i class="fa-solid fa-store"></i>&nbsp;Sell</a>
 																	</div>
 															</div>
 														</div>
