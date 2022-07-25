@@ -108,7 +108,7 @@
 												</div>
 												<div class="card-body">
 													<div class="row">
-														<div class="col-md-3 bg-dark" style="border-right:1px dotted #121212">
+														<div class="col-md-3 bg-dark" style="border-radius: 5px;border:1px solid #292929">
 															<img v-if="parseJSON(item.scheme).image&&ipfs_to_url(parseJSON(item.scheme).image)" class="img-fluid" :src="ipfs_to_url(parseJSON(item.scheme).image)"/>
 															<i class="fas fa-image fa-9x text-secondary" v-else></i>
 															<div class="pt-3">{{parseJSON(item.scheme).description}}</div>
