@@ -212,7 +212,7 @@ sudo nano etc/apache2/sites-available/yournftmarketplace.com-le-ssl.conf
 // NFT Marketplace Website Setup
 // =============================
 // Get NFT Marketplace source codes from https://github.com/navcoin/priverse-nft-marketplace and put them under "/var/www/html/yournftmarketplace.com" folder.
-// Follow instructions for setting up database on https://github.com/navcoin/priverse-nft-marketplace "/var/www/html/yournftmarketplace.com" folder.
+// Follow instructions for setting up database on https://github.com/navcoin/priverse-nft-marketplace.
 
 // IPFS API Setup
 // ==============
