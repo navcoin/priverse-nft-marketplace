@@ -1,4 +1,11 @@
 <?
+if ($_GET["a"]=="switch-network")
+{
+	session_start();
+	$_SESSION["network"]=$_GET["network"];
+	header("location:/");
+	exit();
+}
 include "d.php";
 include "header.php";
 if (empty($_GET["a"]))

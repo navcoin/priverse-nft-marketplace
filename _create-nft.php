@@ -13,60 +13,77 @@
 					<div class="col-md-12">
 						<div class="row">
 							<div class="col-md-4">
-								<div class="form-group" style="margin-top:20px;margin-bottom:20px;">
-									<small>Supported file formats: .gif, .jpg, .jpeg, .png, .svg, .webp, .wav, .ogg, .mp3, .webm, .mp4, .mov</small>
+								<div style="margin-top:15px;">
+									<!--<img v-show="uploadSuccess" class="img-thumbnail" style="max-width:256px;height:auto;" :src="preview_url"/>
+									<div v-show="!preview_url">
+										<i  class="fas fa-image fa-9x"></i>
+									</div>!-->
+									<p class="text-secondary">Please select an image that represents your nft...</p>
+									<p class="text-secondary"><small>Supported file formats: .gif, .jpg, .jpeg, .png, .svg, .webp, .wav, .ogg, .mp3, .webm, .mp4, .mov</small></p>
 								</div>
 								<label class="custom-file-upload">
 									<input type="file" ref="doc" @change="readFile()" />
 									 <i class="fa-solid fa-upload"></i>&nbsp;Choose file
 								</label>
-								<div style="margin-top:15px;">
-									<button :disabled="!uploadEnabled" v-on:click="addFile" class="btn btn-primary"><i class="fa fa-cloud-upload"></i>&nbsp;Upload file to IPFS</button>
-								</div>
-								<div style="margin-top:15px;" v-show="uploadSuccess">
-									<img class="img-thumbnail" style="max-width:256px;height:auto;" :src="preview_url"/>
+								<div class="card mt-3 bg-black text-secondary">
+									<span class="badge bg-success">Preview</span>
+									<img v-show="uploadSuccess" class="card-img-top" style="max-width:256px;height:auto;" :src="preview_url"/>
+									<div class="m-3" v-show="!preview_url">
+										<i  class="ml-3 fas fa-image fa-9x"></i>
+									</div>
+									<div class="card-body">
+										<h5 class="card-title">{{(name?name:"Name")}}</h5>
+										<p class="card-text card-nft-desc">{{(description?description:"Description")}}</p>
+									</div>
 								</div>
 							</div>
 							<div class="col-md-8">
-								<div class="form-group mt-3">
-									Collection : 
-									<select class="form-select bg-dark text-white" style="width: 100%" v-model="collection_id" v-if="collections">
-										<option v-bind:value="item[0].id" v-for="(item,index) in collections">{{item[0].name}}</option>
-									</select>
+								<div class="form-group mt-3" v-if="collection_id">
+									<span class="text-secondary">Collection ID : </span>
+									<input readonly class="form-control bg-dark text-white" type="text" style="width:100%;" v-model="collection_id"/>
 								</div>
 								<div class="form-group mt-3">
-									Category : 
+									<span class="text-secondary">Category : </span>
 									<select class="form-select bg-dark text-white" style="width: 100%" v-model="category" v-on:change="sub_category=undefined">
 										<option v-bind:value="item" v-for="(item,index) in categories">{{item.name}}</option>
 									</select>
 								</div>
 								<div class="form-group mt-3" v-if="category&&category.sub_categories">
-									Sub Category : 
+									<span class="text-secondary">Sub Category : </span>
 									<select class="form-select bg-dark text-white" style="width: 100%" v-model="sub_category">
 										<option v-bind:value="item" v-for="(item,index) in category.sub_categories">{{item.name}}</option>
 									</select>
 								</div>
 								<div class="form-group mt-3">
-									<input class="form-control bg-dark text-white" placeholder="NFT ID" type="number" style="width:100%;" v-model="nft_id"/>
+									<input class="form-control bg-dark text-white" placeholder="NFT ID" type="number" style="width:100%;" min="0" v-model="nft_id"/>
+									<small class="text-secondary">Specify the sequence number in your NFT collection. ID's will be numeric and starts from 0.</small>
 								</div>
 								<div class="form-group mt-3">
 									<input class="form-control bg-dark text-white" placeholder="NFT Name" type="text" style="width:100%;" v-model="name"/>
-								</div>
-								<div class="form-group mt-3">
-									<input class="form-control bg-dark text-white" placeholder="NFT Family ID" type="text" style="width:100%;" v-model="family_id"/>
+									<small class="text-secondary">Specify a name that represents your NFT.</small>
 								</div>
 								<div class="form-group mt-3">
 									<textarea rows="5" class="form-control bg-dark text-white" placeholder="Description" type="text" style="width:100%;" v-model="description"></textarea>
+									<small class="text-secondary">The description will be included on the item's detail page underneath its image.</small>
 								</div>
 								<div class="form-group mt-3">
 									<input class="form-control bg-dark text-white" placeholder="External URL" type="text" style="width:100%;" v-model="external_url"/>
+									<small class="text-secondary">Priverse Marketplace will include a link to this URL on this item's detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.</small>
 								</div>
 								<div class="form-group mt-3">
-									Scheme : 
-									<pre class="border" v-if="scheme" v-html="JSON.stringify(JSON.parse(scheme), null, 2)"></pre>
+									<input class="form-control bg-dark text-white" placeholder="NFT Family ID" type="text" style="width:100%;" v-model="family_id"/>
+									<span class="badge bg-secondary mt-2">Optional</span>
+									<small class="text-secondary">Represents an identifier for grouping items of the same type. For example: nature, sports, science</small>
 								</div>
 								<div class="form-group mt-3">
-									<button class="btn btn-warning" v-on:click="confirmImportNFT()" :disabled="!nft_id || !name || !scheme"><i class="fa-solid fa-wallet"></i>&nbsp;Import NFT to Wallet</button>
+									<div class="collapse" id="collapseExample">
+										<span class="text-secondary">Scheme :</span> 
+										<pre class="border" v-html="JSON.stringify(JSON.parse(scheme), null, 2)"></pre>
+									</div>
+								</div>
+								<div class="form-group mt-3">
+									<button class="btn btn-warning" v-on:click="confirmImportNFT()" :disabled="nft_id.length<1 || !name || !scheme"><i class="fa-solid fa-wallet"></i>&nbsp;Create NFT</button>
+									<a class="btn btn-outline-secondary float-end" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"><i class="fa-solid fa-code"></i>&nbsp;Show Scheme</a>
 								</div>
 							</div>
 						</div>
@@ -164,12 +181,12 @@ input[type="file"]
 			collections:[],
 			uploadEnabled:false,
 			uploadSuccess:false,
-			collection_id:undefined,
+			collection_id:<?=($_GET["collection_id"]?"'".$_GET["collection_id"]."'":"undefined")?>,
+			nft_id:<?=($_GET["nft_id"]?"'".$_GET["nft_id"]."'":'0')?>,
 			file:undefined,
 			file_type:undefined,
 			preview_url:undefined,
 			url:undefined,
-			nft_id:undefined,
 			name:undefined,
 			family_id:undefined,
 			description:undefined,
@@ -206,7 +223,7 @@ input[type="file"]
 				console.log(vm.nft_id);
 				console.log("Importing NFT...");
 				Web3.CreateNft({
-					token_id:undefined,
+					token_id:vm.collection_id,
 					nft_id:parseInt(vm.nft_id),
 					scheme:vm.scheme
 				});
@@ -335,8 +352,7 @@ input[type="file"]
 			{
 				this.scheme=JSON.stringify({
 					version:this.version,
-					category:(this.category&&this.category.id?this.category.id:null),
-					sub_category:(this.sub_category?this.sub_category.id:null),
+					category:(this.sub_category?this.sub_category.id:null),
 					name:this.name,
 					description:this.description,
 					image:this.url,
@@ -375,6 +391,7 @@ input[type="file"]
 					console.log("NFT file selected.");
 					this.file = this.$refs.doc.files[0];
 					this.uploadEnabled=true;
+					this.addFile();
 					reader.onload = (res) =>
 					{
 						//console.log(res.target.result);

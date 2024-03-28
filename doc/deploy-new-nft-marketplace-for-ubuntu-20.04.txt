@@ -1,0 +1,231 @@
+// The following setup steps are for you to set up an NFT marketplace and services for Navio.
+// The installation steps are suitable for Ubuntu 20.04.
+// At least 8 GB memory is required for installation. 16 GB memory is recommended.
+// Considering that NFT content files will be hosted, it is ideal for the disk capacity to be 120 GB or more.
+// Some of the following installation operations must be done manually. Therefore, instead of running the script, it is necessary to proceed step by step.
+// Before starting the installation process, you must purchase a domain name for your NFT marketplace and direct the A records of the domain name and subdomains specified in the installation steps to the IP address of your dedicated server.
+// If you have a problem during installation, you can request support on the navio discord server. https://discord.gg/y4Vu9jw
+
+// Update Ubuntu
+sudo apt -y install software-properties-common
+sudo apt-get update
+
+// Install screen
+sudo apt install screen
+
+// Install curl
+sudo apt install curl
+
+// Install Apache2 Web Server
+sudo apt install apache2
+
+// Enable Required Apache2 Modules
+sudo a2enmod proxy proxy_http rewrite
+
+// Restart Apache2
+systemctl restart apache2
+
+// Install PHP 7.4 and required modules
+sudo add-apt-repository ppa:ondrej/php
+sudo apt-get update
+sudo apt -y install php7.4
+php -v
+sudo apt-get install -y php7.4-cli php7.4-json php7.4-common php7.4-mysql php7.4-zip php7.4-gd php7.4-mbstring php7.4-curl php7.4-xml php7.4-bcmath
+php -m
+
+// Update PHP Config
+sudo nano /etc/php/7.4/apache2/php.ini 
+// Search with CTRL+W keys for 'short_open_tag = Off' and change "Off" value to "On"
+// Press CTRL+X keys and confirm saving file
+
+// Install Kubo - IPFS Node
+wget https://dist.ipfs.tech/kubo/v0.27.0/kubo_v0.27.0_linux-amd64.tar.gz
+tar -xvzf kubo_v0.27.0_linux-amd64.tar.gz
+cd kubo
+sudo bash install.sh
+ipfs version
+
+// Init IPFS node
+ipfs init
+
+// Start IPFS daemon
+screen ipfs daemon
+// You can detach screen with CTRL+A and D keys
+
+// Stop IPFS daemon
+ipfs shutdown
+
+// Install MySQL Server 8
+sudo apt install mysql-server
+mysql --version
+
+// Change MySQL root Password
+sudo systemctl stop mysql
+sudo mkdir -p /var/run/mysqld
+sudo chown mysql:mysql /var/run/mysqld
+sudo mysqld_safe --skip-grant-tables &
+mysql -uroot
+FLUSH PRIVILEGES;
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'insert_your_password_here';
+FLUSH PRIVILEGES;
+exit;
+sudo killall -KILL mysql mysqld_safe mysqld
+sudo systemctl start mysql
+service mysql status
+
+// Install Node.js 18.x
+curl -sL https://deb.nodesource.com/setup_18.x | sudo bash -
+sudo apt-get install nodejs -y
+node -v
+
+// Install PM2 (Process Manager for Node.js)
+sudo npm install pm2 -g
+pm2 -v
+
+// Install Git
+sudo apt install git
+
+// Install Python 2.7
+sudo apt install python
+
+// Install Build Tools required to build some Node.js modules like "bcrypto"
+sudo apt install make
+sudo apt install gcc
+sudo apt install g++
+
+// Install next-connect
+// https://github.com/sakdeniz/next-connect/
+git clone https://github.com/sakdeniz/next-connect.git
+cd next-connect
+npm install
+npm install bcrypto
+npm rebuild
+
+// Create MySQL config for next-connect
+// Create a file named .env in the folder where the script is located and add the following lines.
+MYSQL_HOST="localhost"
+MYSQL_USER="database_name_here"
+MYSQL_PASSWORD="password_here"
+
+// Launch next-connect script for Mainnet
+screen -dmS ncm node index.js -network=mainnet
+
+// Launch next-connect script for Mainnet
+screen -dmS nct node index.js -network=testnet
+
+// Install Certbot
+sudo snap install --classic certbot
+
+// You will need to set specified domains and subdomains A records to your Server IP on your domain management web site.
+
+// Install SSL certificate for your NFT Marketplace
+sudo certbot certonly --apache -d yournftmarketplace.com
+sudo certbot certonly --apache -d ipfs.yournftmarketplace.com
+sudo certbot certonly --apache -d api.yournftmarketplace.com
+
+// Create a VirtualHost (HTTP) file for IPFS API
+sudo nano etc/apache2/sites-available/ipfs.yournftmarketplace.com.conf
+<VirtualHost *:80>
+DocumentRoot "/var/www/html/ipfs/"
+ServerName ipfs.yournftmarketplace.com
+</VirtualHost>
+
+// Create a VirtualHost (HTTPS) file for IPFS API
+sudo nano etc/apache2/sites-available/ipfs.yournftmarketplace.com-le-ssl.conf
+<IfModule mod_ssl.c>
+<VirtualHost *:443>
+DocumentRoot "/var/www/html/ipfs/"
+ServerName ipfs.yournftmarketplace.com
+ProxyRequests Off
+ProxyErrorOverride Off
+ProxyPass /ipfs http://127.0.0.1:8080/ipfs
+ProxyPassReverse /ipfs http://127.0.0.1:8080/ipfs
+SSLCertificateFile /etc/letsencrypt/live/ipfs.yournftmarketplace.com/fullchain.pem
+SSLCertificateKeyFile /etc/letsencrypt/live/ipfs.yournftmarketplace.com/privkey.pem
+Include /etc/letsencrypt/options-ssl-apache.conf
+</VirtualHost>
+</IfModule>
+
+// Create a Proxy VirtualHost (HTTPS) file for next-connect App (Node.js)
+sudo nano etc/apache2/sites-available/api.yournftmarketplace.com-le-ssl.conf
+<VirtualHost *:443>
+ServerName api.yournftmarketplace.com
+Include /etc/letsencrypt/options-ssl-apache.conf
+ProxyPreserveHost On
+ProxyRequests Off
+<Location />
+ProxyPass http://127.0.0.1:3000
+ProxyPassReverse http://127.0.0.1:3000
+</Location>
+<Location /mainnet>
+ProxyPass http://127.0.0.1:3000
+ProxyPassReverse http://127.0.0.1:3000
+</Location>
+<Location /testnet>
+ProxyPass http://127.0.0.1:3001
+ProxyPassReverse http://127.0.0.1:3001
+</Location>
+SSLCertificateFile /etc/letsencrypt/live/api.yournftmarketplace.com/fullchain.pem
+SSLCertificateKeyFile /etc/letsencrypt/live/api.yournftmarketplace.com/privkey.pem
+</VirtualHost>
+
+// Create a VirtualHost (HTTP) file for NFT Marketplace Web Interface
+sudo nano etc/apache2/sites-available/yournftmarketplace.com.conf
+<VirtualHost *:80>
+     ServerAdmin info@yournftmarketplace.com
+     ServerName yournftmarketplace.com
+     ServerAlias www.yournftmarketplace.com
+     DocumentRoot /var/www/html/yournftmarketplace.com
+
+     <Directory /var/www/html/yournftmarketplace.com>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Order allow,deny
+        allow from all
+     </Directory>
+
+     ErrorLog ${APACHE_LOG_DIR}/yournftmarketplace.com.log
+     CustomLog ${APACHE_LOG_DIR}/yournftmarketplace.com.log combined
+</VirtualHost>
+
+// Create a VirtualHost (HTTPS) file for NFT Marketplace Web Interface
+sudo nano etc/apache2/sites-available/yournftmarketplace.com-le-ssl.conf
+<IfModule mod_ssl.c>
+<VirtualHost *:443>
+     ServerAdmin info@yournftmarketplace.com
+     ServerName yournftmarketplace.com
+     DocumentRoot "/var/www/html/yournftmarketplace.com"
+     <Directory /var/www/html/yournftmarketplace.com>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Order allow,deny
+        allow from all
+     </Directory>
+     ErrorLog ${APACHE_LOG_DIR}/yournftmarketplace.com.log
+     CustomLog ${APACHE_LOG_DIR}/yournftmarketplace.com.log combined
+	SSLCertificateFile /etc/letsencrypt/live/yournftmarketplace.com/fullchain.pem
+	SSLCertificateKeyFile /etc/letsencrypt/live/yournftmarketplace.com/privkey.pem
+	Include /etc/letsencrypt/options-ssl-apache.conf
+</VirtualHost>
+</IfModule>
+
+// NFT Marketplace Website Setup
+// =============================
+// Get NFT Marketplace source codes from https://github.com/navcoin/priverse-nft-marketplace and put them under "/var/www/html/yournftmarketplace.com" folder.
+// Follow instructions for setting up database on https://github.com/navcoin/priverse-nft-marketplace "/var/www/html/yournftmarketplace.com" folder.
+
+// IPFS API Setup
+// ==============
+// GET script files for uploading NFT content files to IPFS Node via PHP from https://github.com/navcoin/ipfs-php-file-upload and put them under "/var/www/html/ipfs.yournftmarketplace.com" folder.
+// Create a folder named "upload" inside "/var/www/html/ipfs.yournftmarketplace.com" folder and make it writeable.
+
+// Enable new websites for Apache2
+a2ensite yournftmarketplace.com
+a2ensite ipfs.yournftmarketplace.com
+a2ensite ipfs.yournftmarketplace.com-le-ssl
+a2ensite api.yournftmarketplace.com-le-ssl
+
+// Reload and activate new web site configurations for Apache2
+systemctl reload apache2
+
+// Setup completed

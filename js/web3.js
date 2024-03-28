@@ -91,6 +91,11 @@ class Web3SDK
     this.Log(param);
     this.RequestToWallet({method:"sign_message",message:param.message});
   }
+  async GetWalletInfo()
+  {
+    this.Log("GetWalletInfo");
+    this.RequestToWallet({method:"get_wallet_info"});
+  }
   async RequestToWallet(param)
   {
     param.network=this.network;

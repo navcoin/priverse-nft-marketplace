@@ -7,8 +7,19 @@ error_reporting(0);
 date_default_timezone_set('Europe/Istanbul');
 $wallet_create_account=false;
 $is_account_enabled=false;
-$GLOBALS['network']="testnet";
-$GLOBALS['network_id']=2;
+if (empty($_SESSION["network"]))
+{
+	$network="mainnet";
+	$network_id=1;
+}
+else
+{
+	$network=$_SESSION["network"];
+	if ($_SESSION["network"]=="mainnet") $network_id=1;
+	if ($_SESSION["network"]=="testnet") $network_id=2;
+}
+$GLOBALS['network']=$network;
+$GLOBALS['network_id']=$network_id;
 include "db.php";
 try
 {

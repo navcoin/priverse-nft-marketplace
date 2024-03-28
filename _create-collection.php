@@ -13,23 +13,33 @@
 					<div class="col-md-12">
 						<div class="row">
 							<div class="col-md-4">
-								<div class="form-group" style="margin-top:20px;margin-bottom:20px;">
-									<small>Supported file formats: .gif, .jpg, .jpeg, .png, .svg, .webp</small>
+								<div style="margin-top:15px;">
+									<!--<img v-show="uploadSuccess" class="img-thumbnail" style="max-width:256px;height:auto;" :src="preview_url"/>
+									<div v-show="!preview_url">
+										<i  class="fas fa-image fa-9x"></i>
+									</div>!-->
+									<p class="text-secondary">Please select an image that represents your collection...</p>
+									<p class="text-secondary"><small>Supported file formats: .gif, .jpg, .jpeg, .png, .svg, .webp</small></p>
 								</div>
 								<label class="custom-file-upload">
 									<input type="file" ref="doc" @change="readFile()" />
 									 <i class="fa-solid fa-upload"></i>&nbsp;Choose file
 								</label>
-								<div style="margin-top:15px;">
-									<button :disabled="!uploadEnabled" v-on:click="addFile" class="btn btn-primary"><i class="fa fa-cloud-upload"></i>&nbsp;Upload file to IPFS</button>
-								</div>
-								<div style="margin-top:15px;" v-show="uploadSuccess">
-									<img class="img-thumbnail" style="max-width:256px;height:auto;" :src="preview_url"/>
+								<div class="card mt-3 bg-black text-secondary">
+									<span class="badge bg-success">Preview</span>
+									<img v-show="uploadSuccess" class="card-img-top" style="max-width:256px;height:auto;" :src="preview_url"/>
+									<div class="m-3" v-show="!preview_url">
+										<i class="ml-3 fas fa-image fa-9x"></i>
+									</div>
+									<div class="card-body">
+										<h5 class="card-title">{{(name?name:"Name")}}</h5>
+										<p class="card-text card-nft-desc">{{(description?description:"Description")}}</p>
+									</div>
 								</div>
 							</div>
 							<div class="col-md-8">
 								<div class="form-group mt-3">
-									Category : 
+									<span class="text-secondary">Category : </span>
 									<select class="form-select bg-dark text-white" style="width: 100%" v-model="category">
 										<option v-bind:value="item.id" v-for="(item,index) in categories">{{item.name}}</option>
 									</select>
@@ -39,19 +49,25 @@
 								</div>
 								<div class="form-group mt-3">
 									<textarea rows="5" class="form-control bg-dark text-white" placeholder="Description" type="text" style="width:100%;" v-model="description"></textarea>
+									<small class="text-secondary">The description will be included on the collection's detail page underneath its image.</small>
 								</div>
 								<div class="form-group mt-3">
 									<input class="form-control bg-dark text-white" placeholder="External URL" type="text" style="width:100%;" v-model="external_url"/>
+									<small class="text-secondary">Priverse Marketplace will include a link to this URL on this collection's detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.</small>
 								</div>
 								<div class="form-group mt-3">
 									<input class="form-control bg-dark text-white" placeholder="Max Supply" type="number" style="width:100%;" v-model="max_supply"/>
+									<small class="text-secondary">Set a limit for the items that will be in your collection.</small>
 								</div>
 								<div class="form-group mt-3">
-									Scheme : 
-									<pre class="border" v-html="JSON.stringify(JSON.parse(scheme), null, 2)"></pre>
+									<div class="collapse" id="collapseExample">
+										<span class="text-secondary">Scheme :</span> 
+										<pre class="border" v-html="JSON.stringify(JSON.parse(scheme), null, 2)"></pre>
+									</div>
 								</div>
 								<div class="form-group mt-3">
-									<button class="btn btn-warning" v-on:click="confirmImportNFTCollection()" :disabled="!category || !scheme || !max_supply"><i class="fa-solid fa-wallet"></i>&nbsp;Import Collection to Wallet</button>
+									<button class="btn btn-warning" v-on:click="confirmImportNFTCollection()" :disabled="!category || !scheme || !max_supply"><i class="fa-solid fa-wallet"></i>&nbsp;Create Collection</button>
+									<a class="btn btn-outline-secondary float-end" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"><i class="fa-solid fa-code"></i>&nbsp;Show Scheme</a>
 								</div>
 							</div>
 						</div>
@@ -286,6 +302,7 @@ input[type="file"]
 					console.log("Image file selected.");
 					this.file = this.$refs.doc.files[0];
 					this.uploadEnabled=true;
+					this.addFile();
 					reader.onload = (res) =>
 					{
 						//console.log(res.target.result);

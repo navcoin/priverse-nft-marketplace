@@ -3,15 +3,22 @@ ErrorDocument 404 /404.php
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^search index.php?a=search [QSA]
 RewriteRule ^download-wallet index.php?a=wallet-login-required [QSA]
+RewriteRule ^active-orders index.php?a=active-orders [QSA]
+RewriteRule ^subscribe index.php?a=subscribe [QSA]
+RewriteRule ^switch-network index.php?a=switch-network [QSA]
 RewriteRule ^resources index.php?a=resources [QSA]
 RewriteRule ^stats index.php?a=stats [QSA]
 RewriteRule ^faq index.php?a=faq [QSA]
 RewriteRule ^about index.php?a=about [QSA]
 RewriteRule ^profile index.php?a=profile [QSA]
+RewriteRule ^signup index.php?a=signup [QSA]
+RewriteRule ^verify/([a-zA-Z0-9_-]+)(|/)$ index.php?a=verify&token=$1 [QSA]
 RewriteRule ^categories index.php?a=categories [QSA]
 RewriteRule ^collections index.php?a=collections&b=1 [QSA]
 RewriteRule ^create-collection index.php?a=create-collection [QSA]
+RewriteRule ^create-nft/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)(|/)$ index.php?a=create-nft&collection_id=$1&nft_id=$2 [QSA]
 RewriteRule ^create-nft index.php?a=create-nft [QSA]
 RewriteRule ^collection/([a-zA-Z0-9_-]+)(|/)$ index.php?a=collection&token_id=$1 [QSA]
 RewriteRule ^category/([a-zA-Z0-9_-]+)(|/)$ index.php?a=category&tag=$1 [QSA]

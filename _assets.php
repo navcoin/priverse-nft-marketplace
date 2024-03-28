@@ -17,24 +17,23 @@ try
 			<div class="container">
 				<div class="p-1 bg-dark">
 					<div class="container-fluid py-0">
-						<div class="row">
+						<!--<div class="row">
 							<div class="col-md-4">
 								<?
 								if ($metadata->image)
 								{
 								?>
-								<img class="img-thumbnail" src="<?=ipfs_to_url($metadata->image)?>" style="max-height: 300px;width: auto"/>
+								<img class="img-thumbnail" src="<?=ipfs_to_url($metadata->image)?>" style="max-height: 128px;width: auto"/>
 								<?
 								}
 								?>
 							</div>
 							<div class="col-md-8">
-								<h4 class="display-5 fw-bold"><?=$name?></h4>
-								<p class="col-md-8 fs-4"><?=$metadata->description?></p>
-								<p class="col-md-8 fs-4">Category : <?=$metadata->category?></p>
+								<h4 class="display-5 text-white fw-bold"><?=$name?></h4>
+								<p class="col-md-8 fs-4"><?=$metadata->description?> (<?=ucfirst($metadata->category)?>)</p>
 								<a class="btn btn-primary" target="_blank" href="<?=$metadata->external_url?>"><i class="fas fa-link"></i>&nbsp;<?=$metadata->external_url?></a>
 							</div>
-						</div>
+						</div>!-->
 						<?
 						$sql="SELECT
 						orders.metadata,
@@ -63,7 +62,7 @@ try
 									<div class="modal-dialog modal-dialog-centered modal-lg">
 										<div class="modal-content">
 											<div class="modal-header">
-												<h5 class="modal-title">Purchase with QR Code</h5>
+												<h5 class="modal-title text-white">Purchase with QR Code</h5>
 												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 											</div>
 											<div class="modal-body">
@@ -98,9 +97,9 @@ try
 														<?
 														}
 														?>
-														<h5 class="card-title mt-2"><?=$metadata->name?> #<?=$row["nft_id"]?></h5>
+														<h5 class="card-title mt-2 text-white"><?=$metadata->name?> #<?=$row["nft_id"]?></h5>
 														<p class="card-text"><?=$metadata->description?></p>
-														<p class="card-text">Price : <img style="width:32px;height:32px;" src="images/xnav-logo-no-border.svg"/><?=navoshi_to_nav($nft_order->pay[0]->amount)?></p>
+														<p class="card-text">Price : <img style="width:32px;height:32px;"  src="images/xnav-logo-border.png"/><?=navoshi_to_nav($nft_order->pay[0]->amount)?></p>
 													</div>
 													<div class="col-md-6">
 														<div id="canvas"></div>
@@ -149,11 +148,11 @@ try
 										</div>
 									</div>
 									<div class="col-md-9 mt-5" id="app">
-										<div class="card bg-dark text-white border border-secondary">
+										<div class="card bg-dark text-white border border-dark">
 											<div class="card-body">
-												<h4>Buy Asset</h4>
+												<h4 class="text-secondary">Buy Asset</h4>
 												<h5 class="card-title"><?=$metadata->name?><span class="float-end">#<?=$row["nft_id"]?></span></h5>
-												<p class="card-text"><?=$metadata->description?><span class="float-end" style="font-size:12pt;font-weight: normal;"><img style="width:12px;height:12px;"  src="images/xnav-logo-white-no-border.png"/>&nbsp;<?=navoshi_to_nav($nft_order->pay[0]->amount)?></span></p>
+												<p class="card-text text-secondary"><?=$metadata->description?><span class="float-end" style="font-size:12pt;font-weight: normal;"><img style="width:32px;height:32px;"  src="images/xnav-logo-border.png"/>&nbsp;<?=navoshi_to_nav($nft_order->pay[0]->amount)?></span></p>
 												<button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa-solid fa-qrcode"></i>&nbsp;Purchase with QR Code</button>
 												<button type="button" class="btn btn-primary mb-3" v-on:click="purchaseNftWithWallet()"><i class="fa-solid fa-wallet"></i>&nbsp;Purchase with Web Wallet</button>
 											</div>
@@ -195,6 +194,17 @@ try
 										}
 									}
 								});
+								function reject_nft_order()
+								{
+									Swal.fire({
+										position: 'top-end',
+										icon: 'warning',
+										title: "NFT order rejected",
+										text:"The user declined the NFT purchase request.",
+										showConfirmButton: false,
+										timer: 3000
+									})
+								}
 								</script>
 							<?
 							}

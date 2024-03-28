@@ -5,11 +5,11 @@ try
 	$q=$GLOBALS['dbh']->prepare($sql);
 	$q->bindParam(':tag',$_GET["tag"], PDO::PARAM_STR);
 	$q->execute();
-	if ($q->rowCount()>0)
+	if ($q->rowCount()>0||$_GET["tag"]=="all")
 	{
 		$row=$q->fetch(PDO::FETCH_ASSOC);
-		title($row["name"]);
-		$sql="SELECT * FROM `collections` WHERE JSON_EXTRACT(metadata, '$.category')=:category AND network_id=:network_id";
+		title(($row["name"]?$row["name"]:"All Collections"));
+		$sql="SELECT * FROM `collections` WHERE (JSON_EXTRACT(metadata, '$.category')=:category".($_GET["tag"]=="all"?" OR 1=1":"").") AND network_id=:network_id";
 		$q=$GLOBALS['dbh']->prepare($sql);
 		$q->bindParam(':category',$_GET["tag"], PDO::PARAM_STR);
 		$q->bindParam(':network_id',$GLOBALS['network_id'], PDO::PARAM_STR);
@@ -21,7 +21,7 @@ try
 					<div class="container-fluid py-0">
 						<div class="row">
 							<div class="col-md-12">
-								<h4 class="display-5 fw-bold"><i class="<?=$row["icon"]?>"></i>&nbsp;<?=$row["name"]?></h4>
+								<h4 class="display-5 fw-bold"><i class="<?=($row["icon"]?$row["icon"]:"fas fa-list")?>"></i>&nbsp;<?=($row["name"]?$row["name"]:"All Collections")?></h4>
 								<p class="text-secondary"><?=$q->rowCount()?> Collection</p>
 							</div>
 						</div>
@@ -35,7 +35,22 @@ try
 								?>
 								<div class="col-md-3 mt-3 mb-3 text-secondary">
 									<div class="card bg-black text-secondary">
+										<?
+										if ($metadata->attributes->thumbnail_url)
+										{
+										?>
 										<img src="<?=ipfs_to_url($metadata->attributes->thumbnail_url)?>" class="card-img-top" alt="<?=$metadata->name?>">
+										<?
+										}
+										else
+										{
+										?>
+										<center>
+											<i class="fas fa-image fa-9x text-secondary" style="height: 40vh"></i>
+										</center>
+										<?
+										}
+										?>
 										<div class="card-body">
 											<h5 class="card-title">
 												<?=$metadata->name?>

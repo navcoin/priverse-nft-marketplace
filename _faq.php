@@ -20,12 +20,12 @@ array("What is a Non-Fungible Token (NFT)?","<p>Non-Fungible Tokens (NFTs) are u
 <p>In web3, the public key is the wallet address. The wallet address on Navcoin is the string of random letters and numbers that starts with “xN”.  Everyone can know your wallet address, and knowing your wallet address does not give any control over your wallet.</p>
 <p>In summary, the private key grants full control over the wallet. The seed phrase, usually 12-words long, is a shortcut to the private key and to the wallet itself. This is why it is so important to protect your seed phrase.</p>"),
 array("What crypto wallets can I use with Priverse?","<p>Currently, you can only use the Navcoin Wallet Chrome extension.</p><p><a type='button' class='btn btn-outline-secondary' href='download-wallet'>Learn More</a></p>"),
-array("Why do I need a wallet before buying and selling on Priverse?","<p>Priverse is a tool you use to interact with the blockchain.</p>
-	<p>We never take possession of your items or store your NFTs.</p><p>Instead, we provide a system for peer-to-peer exchanges. Since you’ll be using Priverse to interact directly with others on the blockchain, you’ll need a wallet to help you turn your actions in the browser into transactions on the blockchain.</p>"),
-array("Which blockchains does Priverse support?","Priverse currently only works on the Navcoin blockchain."),
+array("Why do I need a wallet before buying and selling on Priverse Marketplace?","<p>Priverse Marketplace is a tool you use to interact with the blockchain.</p>
+	<p>We never take possession of your items or store your NFTs.</p><p>Instead, we provide a system for peer-to-peer exchanges. Since you’ll be using Priverse Marketplace to interact directly with others on the blockchain, you’ll need a wallet to help you turn your actions in the browser into transactions on the blockchain.</p>"),
+array("Which blockchains does Priverse support?","Priverse Marketplace currently only works on the Navcoin blockchain."),
 array("How do I purchase Navcoin (NAV)?","<p>NAV is the native currency of the Navcoin blockchain and it’s commonly abbreviated to NAV, which is its ticker symbol.</p>
 <p>You need xNAV (Private coin) to pay for some of your interactions with the blockchain and to pay for the items you buy.</p>
-<p>You can buy it from an exchange like Binance, Bittrex and send them to your wallet.</p>
+<p>You can buy it from an exchange like Bittrex, Pancake Swap and send them to your wallet.</p>
 <p>After purchasing your NAVs, you need to convert them to xNAV in order to perform NFT-related transactions on the wallet.</p>
 <a type='button' class='btn btn-outline-secondary' href='https://navcoin.org/get-started' target='_blank'>Learn More</a>"),
 );
