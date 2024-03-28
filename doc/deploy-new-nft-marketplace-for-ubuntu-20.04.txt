@@ -221,7 +221,7 @@ sudo nano etc/apache2/sites-available/yournftmarketplace.com-le-ssl.conf
 
 // Enable new websites for Apache2
 a2ensite yournftmarketplace.com
-a2ensite yournftmarketplace.com-le-ssl.conf
+a2ensite yournftmarketplace.com-le-ssl
 a2ensite ipfs.yournftmarketplace.com
 a2ensite ipfs.yournftmarketplace.com-le-ssl
 a2ensite api.yournftmarketplace.com-le-ssl
