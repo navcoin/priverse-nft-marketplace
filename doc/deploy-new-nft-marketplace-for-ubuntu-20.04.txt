@@ -110,7 +110,7 @@ MYSQL_PASSWORD="password_here"
 // Launch next-connect script for Mainnet
 screen -dmS ncm node index.js -network=mainnet
 
-// Launch next-connect script for Mainnet
+// Launch next-connect script for Testnet
 screen -dmS nct node index.js -network=testnet
 
 // Install Certbot
